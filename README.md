@@ -37,6 +37,8 @@ Usage of ./chatter-bot:
         IRC daemon to connect to (default "localhost:6667")
   -n string
         Nick with which to connect (default "rosie")
+  -s string
+        Location of user scripts (default "/scripts")
   -u string
         User to listen to (default "jspc")
 ```
@@ -50,6 +52,14 @@ Docker
 --
 
 You can find instructions for docker in the table above.
+
+Plugins/ Tasks
+--
+
+Plugins are written in javascript. For a sample, please see the scripts directory. Ultimately; we pass context from chatter-bot (See `scripts.go`) in an object called `Context`. We execute the script and expect a string at the end called `Output`.
+
+The filename determines how it is called. `echo.js` will be run when `chatter-bot` receives the command `echo`.
+
 
 Licence
 --
