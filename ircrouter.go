@@ -55,7 +55,7 @@ func (r *Router) Route(conn *irc.Conn, line *irc.Line) {
 func (r *Router) normaliseCommand(cmd string) (string, string) {
     postString := strings.Replace(cmd, fmt.Sprintf("%s:", r.Nick), "", -1)
 
-    textSplit := strings.SplitAfterN(postString, " ", 2)
+    textSplit := strings.SplitAfterN( strings.TrimSpace(postString), " ", 2)
 
     if len(textSplit) < 2 {
         return strings.TrimSpace(textSplit[0]), ""
