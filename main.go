@@ -9,29 +9,33 @@ import (
 )
 
 var (
-    connectionString string
+    connectionString *string
     router Router
+    scriptDir *string
 )
 
 
 func init() {
     router.Channel = *flag.String("c", "#control-room", "Channel with which to connect")
-    connectionString = *flag.String("h", "localhost:6667", "IRC daemon to connect to")
+    connectionString = flag.String("h", "localhost:6667", "IRC daemon to connect to")
     router.Nick = *flag.String("n", "rosie", "Nick with which to connect")
     router.User = *flag.String("u", "jspc", "User to listen to")
+
+    scriptDir = flag.String("s", "/scripts", "Location of user scripts")
 }
+
 
 func main() {
     flag.Parse()
 
     log.Printf("Connecting to %s as %s. This bot lives in %s and listens to %s",
-        connectionString,
+        *connectionString,
         router.Nick,
         router.Channel,
         router.User)
 
     cfg := irc.NewConfig(router.Nick)
-    cfg.Server = connectionString
+    cfg.Server = *connectionString
     cfg.NewNick = func(n string) string { return n + "^" }
     c := irc.Client(cfg)
 
