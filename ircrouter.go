@@ -11,14 +11,14 @@ import (
 var SafeCommands []string = []string{"uptime", "echo"}
 
 type Router struct {
-    Channel, Nick, User *string
+    Channel, Nick, User string
 }
 
 func (r *Router) ConnectToChannel(conn *irc.Conn, line *irc.Line) {
-    conn.Join(*r.Channel)
-    log.Printf("Connected to %s", *r.Channel)
+    conn.Join(r.Channel)
+    log.Printf("Connected to %s", r.Channel)
 
-    conn.Privmsg(*r.Channel, fmt.Sprintf("Hello! I am %s, your friendly command bot!\n%s\n", *r.Nick))
+    conn.Privmsg(r.Channel, fmt.Sprintf("Hello! I am %s, your friendly command bot!\n%s\n", r.Nick))
 
 }
 
@@ -29,7 +29,7 @@ func (r *Router) Route(conn *irc.Conn, line *irc.Line) {
     var resp string
 
     // Ignore any command not sent to Rosie
-    if requestor == *r.User || strings.HasPrefix(command, fmt.Sprintf("%s: ", *r.Nick)) {
+    if requestor == r.User || strings.HasPrefix(command, fmt.Sprintf("%s: ", r.Nick)) {
         log.Printf("Received: %s", line.Raw)
 
         command = r.normaliseCommand(command)
@@ -49,7 +49,8 @@ func (r *Router) Route(conn *irc.Conn, line *irc.Line) {
 }
 
 func (r *Router) normaliseCommand(cmd string) string {
-    return strings.Replace(cmd, fmt.Sprintf("%s: ", *r.Nick), "", -1)
+    postString := strings.Replace(cmd, fmt.Sprintf("%s:", r.Nick), "", -1)
+    return strings.TrimSpace(postString)
 }
 
 func (r *Router) isValid(requestor, cmd string) bool {
@@ -58,5 +59,5 @@ func (r *Router) isValid(requestor, cmd string) bool {
             return true
         }
     }
-    return requestor == *r.User
+    return requestor == r.User
 }
